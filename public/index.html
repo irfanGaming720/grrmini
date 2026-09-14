@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Gemini BB Q10</title>
-  <link rel="icon" type="image/x-icon" href="/gemini.ico">
+  <title>Masjemini BB Q10</title>
+  <link rel="icon" type="image/x-icon" href="/masjemini.ico">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, Roboto, Helvetica, Arial, sans-serif; }
     body { background-color: #131314; color: #e3e3e3; height: 100vh; display: flex; flex-direction: column; }
@@ -75,7 +75,7 @@
 
   <!-- Header -->
   <div class="header">
-    <div class="brand">Gemini</div>
+    <div class="brand">Masjemini</div>
     <div class="nav-btns">
       <button class="btn-nav" onclick="resetSession()">Reset</button>
       <button class="btn-nav" onclick="openSavedModal()">Favorit</button>
@@ -94,9 +94,9 @@
   <div id="chatbox">
     <div class="msg-row bot-row">
       <div class="bot-header">
-        <span class="bot-avatar">&#10022; Gemini</span>
+        <span class="bot-avatar">&#10022; Masjemini</span>
       </div>
-      <div class="bot-bubble">Siap digunakan di BB Q10. Masukkan API Key kamu untuk memulai.</div>
+      <div class="bot-bubble" id="welcome-msg">Memuat...</div>
     </div>
   </div>
 
@@ -118,6 +118,29 @@
   </div>
 
   <script>
+    // Fungsi salam adaptif waktu Jakarta (WIB / UTC+7)
+    function getGreeting() {
+      var now = new Date();
+      var utcHours = now.getUTCHours();
+      var wibHours = (utcHours + 7) % 24;
+
+      var greeting = 'malam';
+      if (wibHours >= 4 && wibHours < 11) {
+        greeting = 'pagi';
+      } else if (wibHours >= 11 && wibHours < 15) {
+        greeting = 'siang';
+      } else if (wibHours >= 15 && wibHours < 18) {
+        greeting = 'sore';
+      }
+      return 'Selamat ' + greeting + '. Masukkan API Key kamu untuk memulai.';
+    }
+
+    // Pasang salam saat pertama kali dibuka
+    var welcomeElement = document.getElementById('welcome-msg');
+    if (welcomeElement) {
+      welcomeElement.innerText = getGreeting();
+    }
+
     var keys = getStoredKeys();
     var chatHistory = [];
 
@@ -159,8 +182,8 @@
     function resetSession() {
       chatHistory = [];
       var box = document.getElementById('chatbox');
-      box.innerHTML = '<div class="msg-row bot-row"><div class="bot-header"><span class="bot-avatar">&#10022; Gemini</span></div>' +
-                      '<div class="bot-bubble">Sesi percakapan direset. Konteks kembali dari awal.</div></div>';
+      box.innerHTML = '<div class="msg-row bot-row"><div class="bot-header"><span class="bot-avatar">&#10022; Masjemini</span></div>' +
+                      '<div class="bot-bubble">' + getGreeting() + '</div></div>';
     }
 
     function pushHistory(role, text) {
@@ -195,7 +218,7 @@
 
       var botRow = document.createElement('div');
       botRow.className = 'msg-row bot-row';
-      botRow.innerHTML = '<div class="bot-header"><span class="bot-avatar">&#10022; Gemini</span></div>' +
+      botRow.innerHTML = '<div class="bot-header"><span class="bot-avatar">&#10022; Masjemini</span></div>' +
                          '<div class="bot-bubble" id="loading-node"><i>Sedang berpikir...</i></div>';
       box.appendChild(botRow);
       box.scrollTop = box.scrollHeight;
@@ -228,7 +251,6 @@
 
       xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
-          // Jika BUKAN 200 (baik 429, 503, 500), rollover otomatis ke key berikutnya
           if (xhr.status !== 200 && (keyIndex + 1) < keys.length) {
             executeRequest(currentPromptText, keyIndex + 1, botRow);
             return;
@@ -244,7 +266,6 @@
               var rawReply = data.reply;
               pushHistory('model', rawReply);
 
-              // Animasi Mesin Tik Berbasis Karakter yang Aman
               startTypewriter(loadingNode, rawReply, function() {
                 var headerElem = botRow.querySelector('.bot-header');
                 var saveBtn = document.createElement('button');
@@ -279,17 +300,15 @@
       xhr.send(JSON.stringify({ contents: chatHistory, apiKey: currentApiKey }));
     }
 
-    // Fungsi Mesin Tik yang Stabil untuk Browser Lama
     function startTypewriter(targetElement, fullText, onFinish) {
       var box = document.getElementById('chatbox');
       var length = fullText.length;
       var currentPos = 0;
-      var chunkSize = 6; // Muncul 6 karakter per tick agar pas dan tidak pegal nunggu
-      var speed = 15;     // 15ms interval
+      var chunkSize = 6;
+      var speed = 15;
 
       targetElement.innerHTML = '<span class="text-content"></span><span class="typing-cursor"></span>';
       var textSpan = targetElement.querySelector('.text-content');
-      var cursorSpan = targetElement.querySelector('.typing-cursor');
 
       var timer = setInterval(function() {
         currentPos += chunkSize;
@@ -299,15 +318,12 @@
           box.scrollTop = box.scrollHeight;
           if (onFinish) onFinish();
         } else {
-          // Render teks mentah yang aman dulu selama mengetik, belum diproses tag Markdown
-          // agar parsing tag penutup tidak rusak di tengah jalan
           textSpan.innerHTML = escapeHtml(fullText.substring(0, currentPos));
           box.scrollTop = box.scrollHeight;
         }
       }, speed);
     }
 
-    // Fitur Simpan & Hapus dengan Konfirmasi 1.5 Detik
     function getSavedChats() {
       return JSON.parse(localStorage.getItem('gemini_saved_items') || '[]');
     }
@@ -390,7 +406,6 @@
       }, 500);
     }
 
-    // Parser Markdown Ringkas & Bersih
     function renderMarkdown(str) {
       if (!str) return '';
 
@@ -490,7 +505,6 @@
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br>");
     }
 
-    // Deteksi Enter Keyboard Fisik Q10
     document.getElementById('prompt-input').addEventListener('keydown', function(e) {
       if (e.keyCode === 13) {
         sendMsg();

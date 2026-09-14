@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Masjemini BB Q10</title>
-  <link rel="icon" type="image/x-icon" href="/masjemini.ico">
+  <title>Grrmini BB Q10</title>
+  <link rel="icon" type="image/x-icon" href="/grrmini.ico">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, Roboto, Helvetica, Arial, sans-serif; }
     body { background-color: #131314; color: #e3e3e3; height: 100vh; display: flex; flex-direction: column; }
@@ -75,7 +75,7 @@
 
   <!-- Header -->
   <div class="header">
-    <div class="brand">Masjemini</div>
+    <div class="brand">Grrmini</div>
     <div class="nav-btns">
       <button class="btn-nav" onclick="resetSession()">Reset</button>
       <button class="btn-nav" onclick="openSavedModal()">Favorit</button>
@@ -94,7 +94,7 @@
   <div id="chatbox">
     <div class="msg-row bot-row">
       <div class="bot-header">
-        <span class="bot-avatar">&#10022; Masjemini</span>
+        <span class="bot-avatar">&#10022; Grrmini</span>
       </div>
       <div class="bot-bubble" id="welcome-msg">Memuat...</div>
     </div>
@@ -135,7 +135,6 @@
       return 'Selamat ' + greeting + '. Masukkan API Key kamu untuk memulai.';
     }
 
-    // Pasang salam saat pertama kali dibuka
     var welcomeElement = document.getElementById('welcome-msg');
     if (welcomeElement) {
       welcomeElement.innerText = getGreeting();
@@ -151,7 +150,7 @@
     }
 
     function getStoredKeys() {
-      var raw = localStorage.getItem('gemini_user_keys') || '';
+      var raw = localStorage.getItem('grrmini_user_keys') || localStorage.getItem('gemini_user_keys') || '';
       if (!raw) return [];
       var list = raw.split('\n');
       var clean = [];
@@ -173,7 +172,7 @@
         alert('API Key tidak boleh kosong!');
         return;
       }
-      localStorage.setItem('gemini_user_keys', text);
+      localStorage.setItem('grrmini_user_keys', text);
       keys = getStoredKeys();
       document.getElementById('key-panel').style.display = 'none';
       alert(keys.length + ' Key tersimpan!');
@@ -182,7 +181,7 @@
     function resetSession() {
       chatHistory = [];
       var box = document.getElementById('chatbox');
-      box.innerHTML = '<div class="msg-row bot-row"><div class="bot-header"><span class="bot-avatar">&#10022; Masjemini</span></div>' +
+      box.innerHTML = '<div class="msg-row bot-row"><div class="bot-header"><span class="bot-avatar">&#10022; Grrmini</span></div>' +
                       '<div class="bot-bubble">' + getGreeting() + '</div></div>';
     }
 
@@ -218,7 +217,7 @@
 
       var botRow = document.createElement('div');
       botRow.className = 'msg-row bot-row';
-      botRow.innerHTML = '<div class="bot-header"><span class="bot-avatar">&#10022; Masjemini</span></div>' +
+      botRow.innerHTML = '<div class="bot-header"><span class="bot-avatar">&#10022; Grrmini</span></div>' +
                          '<div class="bot-bubble" id="loading-node"><i>Sedang berpikir...</i></div>';
       box.appendChild(botRow);
       box.scrollTop = box.scrollHeight;
@@ -325,7 +324,7 @@
     }
 
     function getSavedChats() {
-      return JSON.parse(localStorage.getItem('gemini_saved_items') || '[]');
+      return JSON.parse(localStorage.getItem('grrmini_saved_items') || localStorage.getItem('gemini_saved_items') || '[]');
     }
 
     function saveChatToStorage(promptText, replyText) {
@@ -338,7 +337,7 @@
         reply: replyText,
         time: timeStr
       });
-      localStorage.setItem('gemini_saved_items', JSON.stringify(list));
+      localStorage.setItem('grrmini_saved_items', JSON.stringify(list));
     }
 
     function openSavedModal() {
@@ -399,7 +398,7 @@
             for (var j = 0; j < list.length; j++) {
               if (list[j].id !== id) filtered.push(list[j]);
             }
-            localStorage.setItem('gemini_saved_items', JSON.stringify(filtered));
+            localStorage.setItem('grrmini_saved_items', JSON.stringify(filtered));
             renderSavedList();
           };
         }

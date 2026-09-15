@@ -17,7 +17,8 @@
 
     /* Panels Modal/Drawer */
     .panel { display: none; background: #1e1f20; padding: 8px 10px; border-bottom: 1px solid #333; flex-direction: column; gap: 6px; }
-    #key-textarea { width: 100%; height: 75px; background: #282a2c; border: 1px solid #444746; color: #fff; padding: 6px; font-size: 11px; border-radius: 6px; resize: none; }
+    #key-textarea { width: 100%; height: 60px; background: #282a2c; border: 1px solid #444746; color: #fff; padding: 6px; font-size: 11px; border-radius: 6px; resize: none; }
+    #tavily-input { width: 100%; background: #282a2c; border: 1px solid #444746; color: #fff; padding: 6px; font-size: 11px; border-radius: 6px; outline: none; }
     .btn-action { background: #4e8cff; color: #000; border: none; font-weight: bold; font-size: 11px; padding: 5px 10px; border-radius: 6px; align-self: flex-end; cursor: pointer; }
     
     /* Chat Area */
@@ -52,8 +53,10 @@
     .bot-bubble th { background-color: #1e1f20; color: #7dacff; font-weight: bold; }
     .bot-bubble tr:nth-child(even) { background-color: #18191a; }
 
-    /* Input Footer */
-    .footer { padding: 6px 8px; background: #131314; }
+    /* Input Footer & Toggle Web */
+    .footer { padding: 4px 8px 8px; background: #131314; display: flex; flex-direction: column; gap: 4px; }
+    .toggle-row { display: flex; align-items: center; justify-content: flex-end; gap: 6px; font-size: 11px; color: #aaa; padding-right: 4px; }
+    .toggle-row input { cursor: pointer; }
     .input-box { display: flex; align-items: center; background: #1e1f20; border: 1px solid #3c4043; border-radius: 20px; padding: 2px 4px 2px 12px; height: 38px; }
     #prompt-input { flex: 1; background: transparent; border: none; color: #e3e3e3; font-size: 13px; outline: none; }
     #btn-send { width: 30px; height: 30px; border-radius: 50%; border: none; background: #7dacff; color: #040e1b; font-weight: bold; font-size: 14px; cursor: pointer; text-align: center; }
@@ -85,9 +88,11 @@
 
   <!-- Key Management Panel -->
   <div id="key-panel" class="panel">
-    <div style="font-size:11px; color:#aaa;">Masukkan 1 API Key per baris (tekan Enter):</div>
-    <textarea id="key-textarea" placeholder="AIzaSyA...&#10;AIzaSyB...&#10;AIzaSyC..."></textarea>
-    <button class="btn-action" onclick="saveApiKeys()">Simpan Keys</button>
+    <div style="font-size:11px; color:#aaa;">Gemini API Keys (1 per baris):</div>
+    <textarea id="key-textarea" placeholder="AIzaSyA...&#10;AIzaSyB..."></textarea>
+    <div style="font-size:11px; color:#aaa; margin-top:2px;">Tavily API Key (Opsional untuk web search):</div>
+    <input type="text" id="tavily-input" placeholder="tvly-dev-...">
+    <button class="btn-action" onclick="saveApiKeys()">Simpan Pengaturan</button>
   </div>
 
   <!-- Chat Area -->
@@ -102,6 +107,10 @@
 
   <!-- Footer Input -->
   <div class="footer">
+    <div class="toggle-row">
+      <label for="web-toggle" style="cursor:pointer;">Web Browsing (Tavily)</label>
+      <input type="checkbox" id="web-toggle" onchange="toggleWebSearch(this)">
+    </div>
     <div class="input-box">
       <input type="text" id="prompt-input" placeholder="Ketik pesan..." autocomplete="off">
       <button id="btn-send" onclick="sendMsg()">&#9650;</button>
@@ -118,7 +127,6 @@
   </div>
 
   <script>
-    // Fungsi salam adaptif waktu Jakarta (WIB / UTC+7)
     function getGreeting() {
       var now = new Date();
       var utcHours = now.getUTCHours();
@@ -141,12 +149,24 @@
     }
 
     var keys = getStoredKeys();
+    var tavilyKey = localStorage.getItem('grrmini_tavily_key') || '';
+    var isWebEnabled = localStorage.getItem('grrmini_web_enabled') === 'true';
     var chatHistory = [];
+
+    document.getElementById('web-toggle').checked = isWebEnabled;
+    if (tavilyKey) {
+      document.getElementById('tavily-input').value = tavilyKey;
+    }
 
     if (keys.length > 0) {
       document.getElementById('key-textarea').value = keys.join('\n');
     } else {
       document.getElementById('key-panel').style.display = 'flex';
+    }
+
+    function toggleWebSearch(cb) {
+      isWebEnabled = cb.checked;
+      localStorage.setItem('grrmini_web_enabled', isWebEnabled ? 'true' : 'false');
     }
 
     function getStoredKeys() {
@@ -168,14 +188,18 @@
 
     function saveApiKeys() {
       var text = document.getElementById('key-textarea').value.trim();
+      var tKey = document.getElementById('tavily-input').value.trim();
+      
       if (!text) {
-        alert('API Key tidak boleh kosong!');
+        alert('Gemini API Key tidak boleh kosong!');
         return;
       }
       localStorage.setItem('grrmini_user_keys', text);
+      localStorage.setItem('grrmini_tavily_key', tKey);
       keys = getStoredKeys();
+      tavilyKey = tKey;
       document.getElementById('key-panel').style.display = 'none';
-      alert(keys.length + ' Key tersimpan!');
+      alert('Pengaturan kunci tersimpan!');
     }
 
     function resetSession() {
@@ -202,7 +226,12 @@
       var text = input.value.trim();
 
       if (keys.length === 0) {
-        alert('Isi API Key dulu di menu atas!');
+        alert('Isi Gemini API Key dulu di menu Keys!');
+        document.getElementById('key-panel').style.display = 'flex';
+        return;
+      }
+      if (isWebEnabled && !tavilyKey) {
+        alert('Fitur Web Browsing aktif tapi Tavily API Key belum diisi di menu Keys!');
         document.getElementById('key-panel').style.display = 'flex';
         return;
       }
@@ -296,7 +325,12 @@
         }
       };
 
-      xhr.send(JSON.stringify({ contents: chatHistory, apiKey: currentApiKey }));
+      xhr.send(JSON.stringify({ 
+        contents: chatHistory, 
+        apiKey: currentApiKey,
+        tavilyKey: isWebEnabled ? tavilyKey : '',
+        useWeb: isWebEnabled
+      }));
     }
 
     function startTypewriter(targetElement, fullText, onFinish) {

@@ -225,12 +225,16 @@
       var box = document.getElementById('chatbox');
       var text = input.value.trim();
 
+      var webCheckbox = document.getElementById('web-toggle');
+      var activeWeb = webCheckbox ? webCheckbox.checked : false;
+      var currentTavily = localStorage.getItem('grrmini_tavily_key') || '';
+
       if (keys.length === 0) {
         alert('Isi Gemini API Key dulu di menu Keys!');
         document.getElementById('key-panel').style.display = 'flex';
         return;
       }
-      if (isWebEnabled && !tavilyKey) {
+      if (activeWeb && !currentTavily) {
         alert('Fitur Web Browsing aktif tapi Tavily API Key belum diisi di menu Keys!');
         document.getElementById('key-panel').style.display = 'flex';
         return;
@@ -271,6 +275,10 @@
         box.scrollTop = box.scrollHeight;
         return;
       }
+
+      var webCheckbox = document.getElementById('web-toggle');
+      var activeWeb = webCheckbox ? webCheckbox.checked : false;
+      var currentTavily = localStorage.getItem('grrmini_tavily_key') || '';
 
       var currentApiKey = keys[keyIndex];
       var xhr = new XMLHttpRequest();
@@ -328,8 +336,8 @@
       xhr.send(JSON.stringify({ 
         contents: chatHistory, 
         apiKey: currentApiKey,
-        tavilyKey: isWebEnabled ? tavilyKey : '',
-        useWeb: isWebEnabled
+        tavilyKey: currentTavily,
+        useWeb: activeWeb
       }));
     }
 

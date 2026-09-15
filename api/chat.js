@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   const tavilyKey = userTavilyKey || process.env.TAVILY_API_KEY;
 
   if (!apiKey) {
-    return res.status(400).json({ reply: 'API Key wajib diisi! Masukkan key di menu atas.' });
+    return res.status(400).json({ reply: 'API Key wajib diisi! Masukkan key di menu Keys.' });
   }
 
   let finalContents = contents;
@@ -30,7 +30,11 @@ export default async function handler(req, res) {
   let searchContext = '';
 
   // Penelusuran web via Tavily jika toggle aktif
-  if (useWeb && tavilyKey && lastUserMsg) {
+  if (useWeb) {
+    if (!tavilyKey) {
+      return res.status(400).json({ reply: 'Fitur Web aktif, tapi Tavily API Key belum diisi di menu Keys!' });
+    }
+
     try {
       const tavilyRes = await fetch('https://api.tavily.com/search', {
         method: 'POST',
@@ -45,24 +49,32 @@ export default async function handler(req, res) {
         })
       });
 
-      const tavilyData = await tavilyRes.json();
+      const tavilyData = await tavilyRes.json().catch(() => ({}));
+
+      if (!tavilyRes.ok || tavilyData.error) {
+        const tErr = tavilyData.error || `Tavily status ${tavilyRes.status}`;
+        return res.status(502).json({ reply: `Gagal mencari di Web: ${tErr}` });
+      }
+
       if (tavilyData.results && tavilyData.results.length > 0) {
         searchContext = tavilyData.results
           .map(r => `- ${r.title}: ${r.content}`)
           .join('\n');
+      } else {
+        searchContext = 'Tidak ditemukan hasil pencarian web yang relevan.';
       }
     } catch (err) {
-      console.warn('Tavily Search Error:', err.message);
+      return res.status(500).json({ reply: `Koneksi Tavily bermasalah: ${err.message}` });
     }
   }
 
   try {
-    const model = process.env.GEMINI_MODEL || 'gemini-3.6-flash';
+    const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${apiKey}`;
 
     const sysPrompt = `Kamu adalah asisten AI yang cerdas, ramah, dan solutif. Jawab to the point dan terstruktur rapi.
 WAKTU SISTEM SAAT INI: ${timeWIB}. Gunakan data waktu ini bila ditanya hari, tanggal, jam, atau tahun saat ini.
-${searchContext ? `\nINFORMASI DARI WEB TAVILY:\n${searchContext}\nGunakan informasi di atas untuk menjawab hal-hal terkini atau faktual.` : ''}`;
+${searchContext ? `\nINFORMASI DARI WEB TAVILY:\n${searchContext}\nGunakan informasi di atas untuk menjawab hal-hal terkini atau faktual. Jangan katakan bahwa kamu tidak bisa mengakses internet jika informasi di atas sudah tersedia.` : ''}`;
 
     const googleRes = await fetch(endpoint, {
       method: 'POST',

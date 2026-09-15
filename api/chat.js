@@ -5,7 +5,6 @@ export default async function handler(req, res) {
 
   const { contents, prompt, apiKey: userKey, tavilyKey: userTavilyKey, useWeb } = req.body || {};
   const apiKey = userKey || process.env.GEMINI_API_KEY;
-  const tavilyKey = userTavilyKey || process.env.TAVILY_API_KEY;
 
   if (!apiKey) {
     return res.status(400).json({ reply: 'API Key wajib diisi! Masukkan key di menu Keys.' });
@@ -29,42 +28,56 @@ export default async function handler(req, res) {
   const lastUserMsg = finalContents[finalContents.length - 1]?.parts?.[0]?.text || '';
   let searchContext = '';
 
-  // Penelusuran web via Tavily jika toggle aktif
+  // Penelusuran web via Tavily jika toggle aktif (dengan mekanisme rotasi multi-key)
   if (useWeb) {
-    if (!tavilyKey) {
+    const rawTavily = userTavilyKey || process.env.TAVILY_API_KEY || '';
+    const tavilyKeys = rawTavily.split('\n').map(k => k.trim()).filter(Boolean);
+
+    if (tavilyKeys.length === 0) {
       return res.status(400).json({ reply: 'Fitur Web aktif, tapi Tavily API Key belum diisi di menu Keys!' });
     }
 
-    try {
-      const tavilyRes = await fetch('https://api.tavily.com/search', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          api_key: tavilyKey,
-          query: lastUserMsg,
-          search_depth: 'basic',
-          max_results: 3
-        })
-      });
+    let tavilySuccess = false;
+    let lastTavilyError = '';
 
-      const tavilyData = await tavilyRes.json().catch(() => ({}));
+    for (let i = 0; i < tavilyKeys.length; i++) {
+      const currentTKey = tavilyKeys[i];
+      try {
+        const tavilyRes = await fetch('https://api.tavily.com/search', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            api_key: currentTKey,
+            query: lastUserMsg,
+            search_depth: 'basic',
+            max_results: 3
+          })
+        });
 
-      if (!tavilyRes.ok || tavilyData.error) {
-        const tErr = tavilyData.error || `Tavily status ${tavilyRes.status}`;
-        return res.status(502).json({ reply: `Gagal mencari di Web: ${tErr}` });
+        const tavilyData = await tavilyRes.json().catch(() => ({}));
+
+        if (tavilyRes.ok && !tavilyData.error) {
+          if (tavilyData.results && tavilyData.results.length > 0) {
+            searchContext = tavilyData.results
+              .map(r => `- ${r.title}: ${r.content}`)
+              .join('\n');
+          } else {
+            searchContext = 'Tidak ditemukan hasil pencarian web yang relevan.';
+          }
+          tavilySuccess = true;
+          break; // Berhasil, keluar dari loop
+        } else {
+          lastTavilyError = tavilyData.error || `Tavily status ${tavilyRes.status}`;
+        }
+      } catch (err) {
+        lastTavilyError = err.message;
       }
+    }
 
-      if (tavilyData.results && tavilyData.results.length > 0) {
-        searchContext = tavilyData.results
-          .map(r => `- ${r.title}: ${r.content}`)
-          .join('\n');
-      } else {
-        searchContext = 'Tidak ditemukan hasil pencarian web yang relevan.';
-      }
-    } catch (err) {
-      return res.status(500).json({ reply: `Koneksi Tavily bermasalah: ${err.message}` });
+    if (!tavilySuccess) {
+      return res.status(502).json({ reply: `Semua Tavily API Key limit/gagal: ${lastTavilyError}` });
     }
   }
 

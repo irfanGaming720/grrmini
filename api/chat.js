@@ -1,3 +1,5 @@
+import { search } from 'duck-duck-scrape';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ reply: 'Method not allowed' });
@@ -18,30 +20,40 @@ export default async function handler(req, res) {
     finalContents = [{ role: 'user', parts: [{ text: prompt }] }];
   }
 
+  // 1. Ambil pertanyaan terakhir user untuk bahan browsing DuckDuckGo
+  const lastUserMsg = finalContents[finalContents.length - 1]?.parts?.[0]?.text || '';
+  let searchContext = '';
+
+  try {
+    const searchResults = await search(lastUserMsg, { safeSearch: 0 });
+    if (searchResults.results && searchResults.results.length > 0) {
+      // Ambil 3 snippet teratas
+      const top3 = searchResults.results.slice(0, 3).map(r => `- ${r.title}: ${r.snippet}`);
+      searchContext = top3.join('\n');
+    }
+  } catch (err) {
+    // Abaikan jika DuckDuckGo timeout/gagal, AI tetap jawab via basis datanya
+  }
+
   try {
     const model = process.env.GEMINI_MODEL || 'gemini-3.6-flash';
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${apiKey}`;
 
-    const payload = {
-      system_instruction: {
-        parts: [
-          {
-            text: "Kamu adalah asisten AI yang cerdas, ramah, dan solutif. Berikan jawaban yang natural, luwes dalam bahasa Indonesia, to the point, dan terstruktur rapi. Jika memberikan kode atau tabel, pastikan format markdown valid."
-          }
-        ]
-      },
-      contents: finalContents,
-      tools: [
-        { google_search: {} }
-      ]
-    };
+    // 2. Suntikkan hasil DuckDuckGo ke instruksi sistem
+    const sysPrompt = `Kamu adalah asisten AI yang cerdas, ramah, dan solutif. Jawab to the point dan terstruktur rapi.
+${searchContext ? `Berikut referensi hasil penelusuran web DuckDuckGo terkait:\n${searchContext}\nGunakan data di atas jika relevan.` : ''}`;
 
     const googleRes = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({
+        system_instruction: {
+          parts: [{ text: sysPrompt }]
+        },
+        contents: finalContents
+      })
     });
 
     const data = await googleRes.json().catch(() => ({}));
@@ -56,7 +68,7 @@ export default async function handler(req, res) {
 
     if (!replyText) {
       if (candidate?.finishReason && candidate.finishReason !== 'STOP') {
-        replyText = `Respons terhenti oleh sistem (Alasan: ${candidate.finishReason}).`;
+        replyText = `Respons terhenti (Status: ${candidate.finishReason}).`;
       } else {
         replyText = 'Tidak ada respons teks dari model.';
       }

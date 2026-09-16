@@ -278,66 +278,153 @@
       var webCheckbox = document.getElementById('web-toggle');
       var activeWeb = webCheckbox ? webCheckbox.checked : false;
       var currentTavily = localStorage.getItem('grrmini_tavily_key') || '';
-
       var currentApiKey = keys[keyIndex];
-      var xhr = new XMLHttpRequest();
-      xhr.open('POST', '/api/chat', true);
-      xhr.setRequestHeader('Content-Type', 'application/json');
 
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-          if (xhr.status !== 200 && (keyIndex + 1) < keys.length) {
-            executeRequest(currentPromptText, keyIndex + 1, botRow);
+      function sendToGemini(searchContext) {
+        var now = new Date();
+        var utcHours = now.getUTCHours();
+        var wibHours = (utcHours + 7) % 24;
+        var hari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        var bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        var timeWIB = hari[now.getDay()] + ', ' + now.getDate() + ' ' + bulan[now.getMonth()] + ' ' + now.getFullYear() + ' pukul ' + ('0' + wibHours).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2) + ' WIB';
+
+        var sysPrompt = "Kamu adalah asisten AI yang cerdas, ramah, dan solutif. Jawab to the point dan terstruktur rapi.\n" +
+                        "WAKTU SISTEM SAAT INI: " + timeWIB + ". Gunakan data waktu ini bila ditanya hari, tanggal, jam, atau tahun saat ini.";
+
+        if (searchContext) {
+          sysPrompt += "\n\nINFORMASI DARI WEB TAVILY:\n" + searchContext +
+                        "\nGunakan informasi di atas untuk menjawab hal-hal terkini atau faktual. Jangan katakan bahwa kamu tidak bisa mengakses internet jika informasi di atas sudah tersedia.";
+        }
+
+        var endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + encodeURIComponent(currentApiKey);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', endpoint, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4) {
+            if (xhr.status !== 200 && (keyIndex + 1) < keys.length) {
+              executeRequest(currentPromptText, keyIndex + 1, botRow);
+              return;
+            }
+
+            btn.disabled = false;
+            if (!loadingNode) return;
+            loadingNode.removeAttribute('id');
+
+            if (xhr.status === 200) {
+              try {
+                var data = JSON.parse(xhr.responseText);
+                var candidate = data.candidates && data.candidates[0];
+                var rawReply = candidate && candidate.content && candidate.content.parts && candidate.content.parts[0].text;
+
+                if (!rawReply) {
+                  if (candidate && candidate.finishReason && candidate.finishReason !== 'STOP') {
+                    rawReply = "Respons terhenti (Status: " + candidate.finishReason + ").";
+                  } else {
+                    rawReply = "Tidak ada respons teks dari model.";
+                  }
+                }
+
+                pushHistory('model', rawReply);
+
+                startTypewriter(loadingNode, rawReply, function() {
+                  var headerElem = botRow.querySelector('.bot-header');
+                  var saveBtn = document.createElement('button');
+                  saveBtn.className = 'btn-save-chat';
+                  saveBtn.innerText = '☆ Simpan';
+                  saveBtn.onclick = function() {
+                    saveChatToStorage(currentPromptText, rawReply);
+                    saveBtn.innerText = '★ Tersimpan';
+                    saveBtn.disabled = true;
+                  };
+                  headerElem.appendChild(saveBtn);
+                });
+
+              } catch (e) {
+                loadingNode.innerHTML = '<span class="error-bubble">Format respons rusak.</span>';
+              }
+            } else {
+              if (chatHistory.length > 0 && chatHistory[chatHistory.length - 1].role === 'user') {
+                chatHistory.pop();
+              }
+              var errMsg = 'Google API Error (' + xhr.status + ')';
+              try {
+                var errData = JSON.parse(xhr.responseText);
+                if (errData.error && errData.error.message) errMsg = errData.error.message;
+              } catch (e) {}
+              loadingNode.innerHTML = '<span class="error-bubble">' + escapeHtml(errMsg) + '</span>';
+            }
+            box.scrollTop = box.scrollHeight;
+          }
+        };
+
+        xhr.send(JSON.stringify({
+          system_instruction: { parts: [{ text: sysPrompt }] },
+          contents: chatHistory
+        }));
+      }
+
+      if (activeWeb && currentTavily.trim()) {
+        var rawTKeys = currentTavily.split('\n');
+        var tKeys = [];
+        for (var k = 0; k < rawTKeys.length; k++) {
+          if (rawTKeys[k].trim()) tKeys.push(rawTKeys[k].trim());
+        }
+
+        if (tKeys.length === 0) {
+          sendToGemini('');
+          return;
+        }
+
+        // Rotasi percobaan key Tavily
+        function tryTavilyKey(tIndex) {
+          if (tIndex >= tKeys.length) {
+            sendToGemini('Semua Tavily API Key limit / gagal merespons.');
             return;
           }
 
-          btn.disabled = false;
-          if (!loadingNode) return;
-          loadingNode.removeAttribute('id');
+          var currentTKey = tKeys[tIndex];
+          var xhrTavily = new XMLHttpRequest();
+          xhrTavily.open('POST', 'https://api.tavily.com/search', true);
+          xhrTavily.setRequestHeader('Content-Type', 'application/json');
 
-          if (xhr.status === 200) {
-            try {
-              var data = JSON.parse(xhr.responseText);
-              var rawReply = data.reply;
-              pushHistory('model', rawReply);
-
-              startTypewriter(loadingNode, rawReply, function() {
-                var headerElem = botRow.querySelector('.bot-header');
-                var saveBtn = document.createElement('button');
-                saveBtn.className = 'btn-save-chat';
-                saveBtn.innerText = '☆ Simpan';
-                saveBtn.onclick = function() {
-                  saveChatToStorage(currentPromptText, rawReply);
-                  saveBtn.innerText = '★ Tersimpan';
-                  saveBtn.disabled = true;
-                };
-                headerElem.appendChild(saveBtn);
-              });
-
-            } catch (e) {
-              loadingNode.innerHTML = '<span class="error-bubble">Format respons rusak.</span>';
+          xhrTavily.onreadystatechange = function() {
+            if (xhrTavily.readyState === 4) {
+              if (xhrTavily.status === 200) {
+                try {
+                  var tData = JSON.parse(xhrTavily.responseText);
+                  if (tData.results && tData.results.length > 0) {
+                    var resList = [];
+                    for (var r = 0; r < tData.results.length; r++) {
+                      resList.push('- ' + tData.results[r].title + ': ' + tData.results[r].content);
+                    }
+                    sendToGemini(resList.join('\n'));
+                  } else {
+                    sendToGemini('Tidak ditemukan hasil pencarian web yang relevan.');
+                  }
+                } catch (e) {
+                  tryTavilyKey(tIndex + 1);
+                }
+              } else {
+                tryTavilyKey(tIndex + 1);
+              }
             }
-          } else {
-            if (chatHistory.length > 0 && chatHistory[chatHistory.length - 1].role === 'user') {
-              chatHistory.pop();
-            }
-            var errMsg = 'Gagal terhubung (' + xhr.status + ')';
-            try {
-              var errData = JSON.parse(xhr.responseText);
-              if (errData.reply) errMsg = errData.reply;
-            } catch (e) {}
-            loadingNode.innerHTML = '<span class="error-bubble">' + escapeHtml(errMsg) + '</span>';
-          }
-          box.scrollTop = box.scrollHeight;
+          };
+
+          xhrTavily.send(JSON.stringify({
+            api_key: currentTKey,
+            query: currentPromptText,
+            search_depth: 'basic',
+            max_results: 3
+          }));
         }
-      };
 
-      xhr.send(JSON.stringify({ 
-        contents: chatHistory, 
-        apiKey: currentApiKey,
-        tavilyKey: currentTavily,
-        useWeb: activeWeb
-      }));
+        tryTavilyKey(0);
+      } else {
+        sendToGemini('');
+      }
     }
 
     function startTypewriter(targetElement, fullText, onFinish) {

@@ -1,5 +1,10 @@
 <div align="center">
 
+**[English](README.md)** | **Bahasa Indonesia**
+
+<br/>
+<br/>
+
 <img src="https://raw.githubusercontent.com/irfanGaming720/grrmini/main/public/apple-touch-icon.png" alt="Grrmini Logo" width="160" style="border-radius: 28px; margin-bottom: 12px;" />
 
 # ✦ Grrmini ✦
@@ -14,10 +19,6 @@
 [![Gemini 3.6 Flash](https://img.shields.io/badge/Google%20Gemini-3.6%20Flash-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://aistudio.google.com/)
 [![Tavily Search](https://img.shields.io/badge/Search-Tavily%20API-00C7B7?style=for-the-badge&logo=tavily&logoColor=white)](https://tavily.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
-
-<br/>
-
-**[English](README.md)** | **Bahasa Indonesia**
 
 <br/>
 

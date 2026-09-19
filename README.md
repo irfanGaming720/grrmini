@@ -22,14 +22,14 @@
 
 <br/>
 
-### 🌐 Web App Link: [grrmini.vercel.app](https://grrmini.vercel.app)
+### 🌐 Live Web App: [grrmini.vercel.app](https://grrmini.vercel.app)
 
 <p align="center">
   <a href="#-overview">Overview</a> •
   <a href="#-key-features">Key Features</a> •
   <a href="#-architecture--workflow">Architecture</a> •
-  <a href="#-getting-api-keys-free">Getting API Keys</a> •
-  <a href="#-how-to-use">How to Use</a> •
+  <a href="#-getting-api-keys">Getting API Keys</a> •
+  <a href="#-usage-guide">Usage Guide</a> •
   <a href="#-deploying-to-vercel">Deploy to Vercel</a> •
   <a href="#-license">License</a>
 </p>
@@ -40,12 +40,12 @@
 
 ## 📖 Overview
 
-**Grrmini** is a standalone artificial intelligence web client (*AI chat client*) powered by Google Gemini, crafted **purely with Vanilla HTML5, CSS3, and standard JavaScript** without external library dependencies, modern frameworks (React/Vue/Angular), or heavy bundlers/build-tools.
+**Grrmini** is an ultra-lightweight web client for Google Gemini built entirely with **Vanilla HTML5, CSS3, and standard JavaScript**. It requires no modern frontend frameworks (React/Vue), no CSS libraries (Tailwind), and no build steps or bundlers.
 
-This project is deployed on **[Vercel](https://grrmini.vercel.app)** and built with the philosophy of **extreme efficiency and maximum accessibility**:
-- **Legacy Device Support (*Legacy-Friendly*)**: Specifically and ergonomically designed for low-spec devices and vintage web browsers with **1:1 square ratio screens (720x720 pixels)** such as the **BlackBerry Q10**, as well as modern keypad/touchscreen phones.
-- **Zero Frontend Dependencies & Serverless Relay**: Pure HTML/CSS/JS interface without heavy libraries. Third-party API communication is handled via a Vercel Serverless Function (`api/chat.js`) acting as a secure intermediary (*relay*), avoiding CORS obstacles on vintage browsers while keeping performance snappy.
-- **Hosted on Vercel**: Accessible directly and publicly at **[grrmini.vercel.app](https://grrmini.vercel.app)** powered by Vercel's global Edge CDN network with high availability.
+Hosted on **[Vercel](https://grrmini.vercel.app)**, the project focuses on **minimal resource consumption and legacy browser compatibility**:
+- **Optimized for Legacy Hardware**: Designed specifically to run on older mobile browsers and fit **1:1 square displays (720x720)** such as the **BlackBerry Q10**, physical keypad devices, and modern smartphones.
+- **Zero Frontend Dependencies & Serverless Relay**: The interface uses direct DOM manipulation and native `XMLHttpRequest`. API requests are proxied through a Vercel Serverless Function (`api/chat.js`) to bypass CORS restrictions on older browsers while keeping network overhead low.
+- **Public Edge Deployment**: Deployed globally on Vercel's Edge CDN at **[grrmini.vercel.app](https://grrmini.vercel.app)** for fast initial loading times.
 
 ---
 
@@ -53,66 +53,66 @@ This project is deployed on **[Vercel](https://grrmini.vercel.app)** and built w
 
 | Feature | Description |
 | :--- | :--- |
-| 🚀 **Hosted on Vercel & Fast CDN** | Runs smoothly on Vercel's edge network via the domain **[grrmini.vercel.app](https://grrmini.vercel.app)** with near-instant loading time. |
-| ⚡ **Zero Frontend Dependencies & Relay** | Featherlight frontend without npm bundles, paired with a Vercel Serverless Function (`api/chat.js`) as a secure relay that bypasses CORS on legacy browsers. |
-| 🪶 **Ultra-Lightweight & Legacy-Friendly** | No React, no Tailwind, and no Marked.js. Uses an internal lightweight **Custom Regex Markdown Parser** to render bold/italic text, blockquotes, lists, and responsive data tables. |
-| 🕒 **Auto WIB Time Injection** | Automatically calculates and injects Jakarta local time (**WIB / UTC+7**) into the *system instruction*. The AI always understands the context of the current day, date, month, year, and hour without wasting web search quota. |
-| 🔄 **Smart Multi-Key Failover (Rerolling)** | Prevents interruptions caused by rate limits (HTTP 429) or exhausted daily quotas. Supports multiple Gemini API Keys and Tavily API Keys (one per line). The system automatically rotates to the next key without dropping the conversation. |
-| 🔍 **Web Browsing Toggle (Tavily)** | Access real-time factual web searches via Tavily Search API. Simply toggle on/off with a single tap of a checkbox. |
-| ⭐ **Favorite Chat Storage** | Save important response history to `localStorage`. Equipped with a **1.5-second confirmation delay safeguard** on the delete button to prevent accidental clicks on small screens. |
-| ⌨️ **Ergonomic Keyboard & Trackpad Navigation** | Supports the `Enter` key to send messages, a fast **Reset** session button, and a modern dark mode palette in dark gray to save power on OLED/AMOLED screens. |
+| 🚀 **Hosted on Vercel & Fast CDN** | Delivered globally via **[grrmini.vercel.app](https://grrmini.vercel.app)** with instant page loads. |
+| ⚡ **Zero Frontend Dependencies** | Pure native frontend with no npm runtime packages, paired with `api/chat.js` to handle CORS and backend routing safely. |
+| 🪶 **Legacy-Friendly Markdown Parser** | Built-in regex markdown parser that formats bold/italic text, blockquotes, lists, and responsive tables without external dependencies like Marked.js. |
+| 🕒 **Local Time Context Injection (WIB)** | Automatically injects current Jakarta time (**WIB / UTC+7**) into the system prompt, keeping the model aware of date and time without external lookups. |
+| 🔄 **Multi-Key Failover (Rerolling)** | Enter multiple Gemini and Tavily API keys (one per line). The app automatically switches to the next available key upon hitting rate limits (HTTP 429) or quota bounds. |
+| 🔍 **Web Search Toggle (Tavily)** | Fetch real-time factual web context using the Tavily Search API, toggled via a simple checkbox. |
+| ⭐ **Local Bookmark Storage** | Save notable responses to `localStorage`. Includes a **1.5-second confirmation delay** on deletion to prevent accidental taps on small touchscreens. |
+| ⌨️ **Keyboard & OLED Optimized** | Supports `Enter` to submit, quick session resets, and a high-contrast dark theme optimized for OLED/AMOLED power saving. |
 
 ---
 
 ## 🏗️ Architecture & Workflow
 
-Grrmini pairs an ultra-lightweight browser interface with a Vercel serverless function (`api/chat.js`) acting as a relay bridge to avoid CORS limitations and ensure vintage browser compatibility:
+Grrmini routes browser requests through a serverless backend relay (`api/chat.js`) to handle external APIs securely:
 
 ```text
-[ User Input ] ──► [ Vercel Serverless Relay (api/chat) ]
-                       ├── Jakarta Time (WIB) Injection
-                       ├── Tavily Search Rotation (If Toggle Active)
-                       └── Request to Gemini 3.6 Flash (Failover Loop)
-                                 │
-                                 ▼
-                 [ Send Reply to BlackBerry Browser ]
-                                 │
-                                 ▼
-                 [ Render Markdown & Save Favorites ]
+[ User Prompt ] ──► [ Vercel Serverless Relay (api/chat) ]
+                         ├── Injects Local Jakarta Time (WIB)
+                         ├── Tavily Web Search (If Toggled On)
+                         └── Calls Gemini 3.6 Flash (Failover Loop)
+                                   │
+                                   ▼
+                   [ Streams Response to Browser ]
+                                   │
+                                   ▼
+             [ Custom Regex Markdown Rendering & Storage ]
 ```
 
 ---
 
-## 🔑 Getting API Keys (Free)
+## 🔑 Getting API Keys
 
-Grrmini requires at least one **Google Gemini API Key**. For the real-time web search feature, you can also add a **Tavily Search API Key**. Both offer generous free tiers:
+Grrmini requires at least one Google Gemini API Key. If you want real-time web search, you can also provide a Tavily Search API Key. Both offer free tiers with no credit card required:
 
-### 1. Getting a Google Gemini API Key (Free)
-1. Visit the **[Google AI Studio](https://aistudio.google.com/)** portal.
+### 1. Google Gemini API Key
+1. Go to **[Google AI Studio](https://aistudio.google.com/)**.
 2. Sign in with your Google account.
-3. Click the **Get API key** menu on the left navigation bar.
-4. Click **Create API key** (choose an available Google Cloud project or create a new one).
-5. Copy the API token starting with `AIzaSy...`.
-6. *(Tips)*: You can create 2–3 different API keys to take advantage of Grrmini's automatic multi-key rerolling feature.
+3. Click **Get API key** in the sidebar.
+4. Click **Create API key**.
+5. Copy the generated key starting with `AIzaSy...`.
+6. *(Optional)*: Add keys from multiple accounts to enable automatic rotation.
 
-### 2. Getting a Tavily Search API Key (Free)
-1. Visit the official **[Tavily AI](https://tavily.com/)** website.
-2. Click **Sign Up** to create a free account (*Free tier* includes **1,000 searches/month**).
-3. Open the **Dashboard** page.
+### 2. Tavily Search API Key
+1. Go to **[Tavily AI](https://tavily.com/)**.
+2. Register for a free account (1,000 free searches/month).
+3. Open your **Dashboard**.
 4. Copy the API key starting with `tvly-...`.
 
 ---
 
-## 🚀 How to Use
+## 🚀 Usage Guide
 
-### 1. Opening the App
-Access the web app directly in your browser:  
+### 1. Accessing the Application
+Open the app in any browser:  
 👉 **[https://grrmini.vercel.app](https://grrmini.vercel.app)**
 
-When opened for the first time, the key settings panel (*Keys*) will automatically pop up asking for initial API key configuration.
+On your first visit, the **Keys** modal opens automatically to guide initial setup.
 
-### 2. Entering Multi-Keys ("Keys" Menu)
-Click the **Keys** button on the top menu bar:
+### 2. Configuring Keys (The "Keys" Menu)
+Click the **Keys** button in the header bar:
 
 ```text
 ┌────────────────────────────────────────────────────────┐
@@ -125,49 +125,49 @@ Click the **Keys** button on the top menu bar:
 │ tvly-dev-Axxxxxxxxxxxxxxxxxxxx                         │
 │ tvly-dev-Byyyyyyyyyyyyyyyyyyyy                         │
 │                                                        │
-│                        [ Save Settings ]               │
+│                        [ Simpan Pengaturan ]           │
 └────────────────────────────────────────────────────────┘
 ```
-- **Gemini API Keys**: Enter one or more keys, separating each key with a new line (*Enter*).
-- **Tavily API Keys**: Enter your Tavily key(s) (also supports multiple lines for automatic rotation).
-- Click **Save Settings**. All keys are stored privately in your browser's `localStorage` and are never saved on any third-party servers.
+- **Gemini API Keys**: Add one or more keys separated by line breaks (*Enter*).
+- **Tavily API Keys**: Add one or more Tavily keys for failover rotation.
+- Click **Simpan Pengaturan**. Keys remain strictly inside your browser's local storage and are never logged or stored elsewhere.
 
-### 3. Using Web Browsing (Tavily)
-- Check the **Web Browsing (Tavily)** checkbox when you want to query current information (today's news, match scores, weather, latest prices).
-- Uncheck for general chatting, brainstorming, or coding to conserve web search quota.
+### 3. Web Search Toggle
+- Enable **Web Browsing (Tavily)** to query current events, live scores, weather, or real-time topics.
+- Disable it for routine conversation, coding, or brainstorming to conserve monthly search quota.
 
-### 4. Saving & Deleting Favorite Chats
-- Click the **☆ Simpan** button on the top right corner of the AI reply bubble to save important chats.
-- Open the saved list anytime by pressing the **Favorit** button in the header.
-- **1.5-Second Delay Safeguard**: To prevent accidental taps on small touchscreen devices, the **Hapus** button requires a 1.5-second delay (`Yakin? 1.5s` ➔ `Hapus Sekarang`) before data is permanently removed from `localStorage`.
+### 4. Bookmarking & Deleting Messages
+- Click **☆ Simpan** on the top-right corner of any completed response bubble to bookmark it.
+- View saved messages by clicking **Favorit** in the header.
+- **1.5-Second Safeguard**: The **Hapus** button uses a 1.5-second cooldown (`Yakin? 1.5s` ➔ `Hapus Sekarang`) to prevent accidental deletion on compact touchscreens.
 
-### 5. Starting a New Session
-Press the **Reset** button in the top navigation to clear the on-screen chat and start a fresh conversation session with a friendly greeting suited to the time of day (Morning/Afternoon/Evening/Night).
+### 5. Session Reset
+Click **Reset** in the top navigation bar to wipe the current thread and return to the contextual greeting prompt.
 
 ---
 
 ## 🌐 Deploying to Vercel
 
-If you want to deploy this project to your own Vercel account:
+To deploy your own instance of Grrmini:
 
-### Method 1: Via Vercel Dashboard (Recommended)
-1. Open [Vercel Dashboard](https://vercel.com/) and log in.
+### Option 1: Via Vercel Dashboard (Recommended)
+1. Log in to your [Vercel Dashboard](https://vercel.com/).
 2. Click **Add New** ➔ **Project**.
-3. Connect your GitHub account and select the `grrmini` repository.
-4. In the configuration settings:
-   - **Framework Preset**: Select `Other`.
-   - **Root Directory**: `./` (default).
-5. Click **Deploy**. Vercel will automatically distribute your web application to your `*.vercel.app` domain.
+3. Import your `grrmini` GitHub repository.
+4. Set the project configuration:
+   - **Framework Preset**: `Other`
+   - **Root Directory**: `./`
+5. Click **Deploy**.
 
-### Method 2: Using Vercel CLI
+### Option 2: Via Vercel CLI
 ```bash
-# Install Vercel CLI (if not already installed)
+# Install Vercel CLI
 npm i -g vercel
 
-# Enter project directory
+# Navigate to the project directory
 cd grrmini
 
-# Run deploy
+# Deploy
 vercel
 ```
 
@@ -175,31 +175,31 @@ vercel
 
 ## 📱 Device Compatibility
 
-Grrmini has been thoroughly tested and optimized for:
-- 📱 **BlackBerry 10 OS** (BlackBerry Q10) via BlackBerry Native Browser (1:1 screen ratio).
-- 📱 **Feature Phones & Mini Devices** with square or compact screen resolutions.
-- 💻 **Modern Desktop & Smartphone Browsers** (Chrome, Firefox, Safari, Edge, Opera, Kiwi, Brave).
+Grrmini is tested and supported on:
+- 📱 **BlackBerry 10 OS** (BlackBerry Q10) via native browser (1:1 square display).
+- 📱 **Feature phones and compact devices** with low-resolution displays.
+- 💻 **Modern desktop & mobile browsers** (Chrome, Firefox, Safari, Edge, Opera, Kiwi, Brave).
 
 ---
 
-## 🛠️ Detailed Tech Stack
+## 🛠️ Tech Stack
 
-| Layer | Technology | Role & Description |
+| Layer | Technology | Description |
 | :--- | :--- | :--- |
-| **Markup & Structure** | Semantic HTML5 | Standard tags with no external UI libraries, memory-efficient. |
-| **Styling & Design** | Pure CSS3 | Responsive Flexbox layout, small viewport friendly, power-saving dark theme (*OLED friendly*). |
-| **Frontend Logic** | Vanilla JavaScript (ES5/ES6) | Uses native `XMLHttpRequest` and `localStorage` without npm runtime dependencies. |
-| **Backend Relay** | Vercel Serverless Function (`api/chat.js`) | Secure API intermediary to prevent CORS limitations on legacy browsers. |
+| **Markup** | Semantic HTML5 | Clean standard markup with zero third-party UI libraries. |
+| **Styling** | Pure CSS3 | Responsive Flexbox layout with an OLED-friendly dark palette. |
+| **Frontend Logic** | Vanilla JavaScript (ES5/ES6) | Uses native `XMLHttpRequest` and `localStorage` without bundlers. |
+| **Backend Relay** | Vercel Serverless Function (`api/chat.js`) | Node.js proxy to resolve browser CORS limitations. |
 | **AI Model** | Google Gemini 3.6 Flash | Official `generateContent` endpoint via Google Generative Language API v1beta. |
-| **Web Search** | Tavily REST API | Lightweight AI web search integration for real-time context. |
-| **Hosting & Platform** | Vercel | Global CDN at **[grrmini.vercel.app](https://grrmini.vercel.app)**. |
-| **Storage** | Browser LocalStorage | Securely stores API keys and favorite chat lists privately on the user's side. |
+| **Web Search** | Tavily REST API | AI-optimized search queries for live context injection. |
+| **Hosting** | Vercel | Global Edge network hosting at **[grrmini.vercel.app](https://grrmini.vercel.app)**. |
+| **Client Storage** | Browser LocalStorage | Retains API keys and bookmark history on the client side. |
 
 ---
 
 ## 📄 License
 
-This project is licensed under the [MIT License](LICENSE). You are free to use, modify, and redistribute this code for personal or commercial purposes.
+This project is licensed under the [MIT License](LICENSE). You are free to use, modify, and distribute it for personal or commercial projects.
 
 ```text
 MIT License
@@ -220,6 +220,6 @@ copies or substantial portions of the Software.
 ---
 
 <div align="center">
-  <sub>Made with ❤️ for Blackberry phone lovers and Gemini AI.</sub><br/>
+  <sub>Made with ❤️ for vintage phone lovers and Gemini AI.</sub><br/>
   <sub>Visit: <a href="https://grrmini.vercel.app">grrmini.vercel.app</a></sub>
 </div>

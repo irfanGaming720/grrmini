@@ -179,8 +179,7 @@ vercel
 ## 📱 Kompatibilitas Perangkat
 
 Grrmini telah diuji dan dioptimalkan untuk:
-- 📱 **BlackBerry 10 OS** (BlackBerry Q10, Q5, Classic, Passport) via BlackBerry Native Browser.
-- 📱 **Feature Phone & Perangkat Mini** dengan resolusi layar 1:1, 4:3, atau rasio modern.
+- 📱 **BlackBerry 10 OS** (BlackBerry Q10) via BlackBerry Native Browser.
 - 💻 **Desktop & Smartphone Modern** (Chrome, Firefox, Safari, Edge, Opera).
 
 ---
@@ -222,6 +221,6 @@ copies or substantial portions of the Software.
 ---
 
 <div align="center">
-  <sub>Dibuat dengan ❤️ untuk para pecinta handphone jadoel dan web minimalis berkecepatan tinggi.</sub><br/>
+  <sub>Dibuat dengan ❤️ untuk para pecinta handphone jadoel dan AI Gemini.</sub><br/>
   <sub>Kunjungi: <a href="https://grrmini.vercel.app">grrmini.vercel.app</a></sub>
 </div>

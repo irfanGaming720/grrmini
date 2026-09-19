@@ -180,7 +180,7 @@ vercel
 
 Grrmini telah diuji dan dioptimalkan untuk:
 - 📱 **BlackBerry 10 OS** (BlackBerry Q10) via BlackBerry Native Browser.
-- 💻 **Desktop & Smartphone Modern** (Chrome, Firefox, Safari, Edge, Opera).
+- 💻 **Desktop & Smartphone Modern** (Chrome, Edge, Opera).
 
 ---
 

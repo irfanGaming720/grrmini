@@ -19,6 +19,7 @@
 [![Gemini 3.6 Flash](https://img.shields.io/badge/Google%20Gemini-3.6%20Flash-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://aistudio.google.com/)
 [![Tavily Search](https://img.shields.io/badge/Search-Tavily%20API-00C7B7?style=for-the-badge&logo=tavily&logoColor=white)](https://tavily.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+[![Views](https://visitor-badge.laobi.icu/badge?page_id=irfanGaming720.grrmini)](https://github.com/irfanGaming720/grrmini)
 
 <br/>
 

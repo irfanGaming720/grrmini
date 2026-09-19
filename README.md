@@ -141,33 +141,10 @@ Klik tombol **Reset** pada header untuk membersihkan riwayat obrolan di layar da
 
 ---
 
-## 🌐 Panduan Deploy ke GitHub Pages
-
-Karena Grrmini 100% murni berkas statis, Anda dapat mendeploy-nya ke GitHub Pages dalam hitungan detik:
-
-1. **Fork** atau **Clone** repositori ini ke akun GitHub Anda:
-   ```bash
-   git clone https://github.com/irfanGaming720/masjemini.git
-   cd masjemini
-   ```
-2. Pastikan file `index.html` berada pada cabang utama (`main`).
-3. Buka halaman repositori Anda di GitHub:
-   - Masuk ke tab **Settings** ➔ **Pages**.
-   - Pada bagian **Build and deployment** > **Source**, pilih **Deploy from a branch**.
-   - Pilih Branch: `main` dan folder: `/ (root)` atau `/public` (sesuai penempatan `index.html` Anda).
-   - Klik **Save**.
-4. Dalam 1–2 menit, web app Grrmini Anda siap diakses secara publik di alamat:
-   ```
-   https://<username-github>.github.io/<nama-repo>/
-   ```
-
----
-
 ## 📱 Kompatibilitas Perangkat
 
 Grrmini telah diuji dan dioptimalkan untuk:
-- 📱 **BlackBerry 10 OS** (BlackBerry Q10, Q5, Classic, Passport) via BlackBerry Native Browser.
-- 📱 **Feature Phone & Perangkat Mini** dengan resolusi layar 1:1, 4:3, atau rasio modern.
+- 📱 **BlackBerry 10 OS** (BlackBerry Q10) via BlackBerry Native Browser.
 - 💻 **Desktop & Smartphone Modern** (Chrome, Firefox, Safari, Edge, Opera).
 
 ---
@@ -208,5 +185,5 @@ copies or substantial portions of the Software.
 ---
 
 <div align="center">
-  <sub>Dibuat dengan ❤️ untuk para pecinta perangkat lawas dan web minimalis berkecepatan tinggi.</sub>
+  <sub>Dibuat dengan ❤️ untuk para pecinta handphone jadoel dan AI Gemini.</sub>
 </div>

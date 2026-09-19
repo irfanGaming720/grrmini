@@ -9,7 +9,7 @@
 
 # ✦ Grrmini ✦
 
-**Ultra-Lightweight Gemini AI Web Client — Zero Frontend Dependencies, Legacy Browser Ready, Serverless Relay.**
+**Web Client Gemini AI Super Ringan — Tanpa Dependensi Frontend, Siap untuk Browser Jadul, Didukung Serverless Relay.**
 
 [![Hosted on Vercel](https://img.shields.io/badge/Hosted%20on-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://grrmini.vercel.app)
 [![Website](https://img.shields.io/badge/Website-grrmini.vercel.app-4e8cff?style=for-the-badge&logo=googlechrome&logoColor=white)](https://grrmini.vercel.app)
@@ -22,15 +22,15 @@
 
 <br/>
 
-### 🌐 Tautan Web App: [grrmini.vercel.app](https://grrmini.vercel.app)
+### 🌐 Akses Web App: [grrmini.vercel.app](https://grrmini.vercel.app)
 
 <p align="center">
   <a href="#-gambaran-umum">Gambaran Umum</a> •
   <a href="#-fitur-unggulan">Fitur Unggulan</a> •
   <a href="#-arsitektur--alur-kerja">Arsitektur</a> •
-  <a href="#-panduan-mendapatkan-api-key">Dapatkan API Key</a> •
-  <a href="#-panduan-penggunaan">Cara Pakai</a> •
-  <a href="#-panduan-deploy-ke-vercel">Deploy ke Vercel</a> •
+  <a href="#-cara-dapat-api-key-gratis">Dapatkan API Key</a> •
+  <a href="#-cara-pakai">Cara Pakai</a> •
+  <a href="#-deploy-ke-vercel">Deploy ke Vercel</a> •
   <a href="#-lisensi">Lisensi</a>
 </p>
 
@@ -40,79 +40,79 @@
 
 ## 📖 Gambaran Umum
 
-**Grrmini** adalah klien web kecerdasan buatan (*AI chat client*) mandiri berbasis Google Gemini yang dirancang **murni dengan Vanilla HTML5, CSS3, dan JavaScript standar** tanpa dependensi pustaka luar, framework modern (React/Vue/Angular), maupun *bundler/build-tools* yang berat.
+**Grrmini** adalah klien web AI berbasis Google Gemini yang dibangun murni menggunakan **Vanilla HTML5, CSS3, dan JavaScript standar**. Dibuat seringkas mungkin tanpa framework modern (React/Vue), tanpa Tailwind, dan tanpa bundler yang bikin berat.
 
-Project ini di-deploy di **[Vercel](https://grrmini.vercel.app)** dan dibangun dengan filosofi **efisiensi ekstrem serta aksesibilitas maksimal**:
-- **Dukungan Perangkat Lawas (*Legacy-Friendly*)**: Didesain secara spesifik dan ergonomis untuk perangkat berspesifikasi minim serta peramban web lawas berlayar rasio kotak **1:1 (720x720 piksel)** seperti **BlackBerry Q10**, maupun ponsel keypad/touchscreen modern.
-- **Zero Frontend Dependencies & Serverless Relay**: Antarmuka murni HTML/CSS/JS tanpa library berat. Komunikasi ke API pihak ketiga diakomodasi melalui Vercel Serverless Function (`api/chat.js`) sebagai perantara (*relay*) yang aman, menghindari kendala CORS pada peramban jadul, serta menjaga performa tetap gesit.
-- **Hosted on Vercel**: Dapat langsung diakses secara publik di **[grrmini.vercel.app](https://grrmini.vercel.app)** dengan kecepatan jaringan Edge CDN global Vercel dan ketersediaan tinggi (*high availability*).
+Aplikasi ini di-deploy di **[Vercel](https://grrmini.vercel.app)** dengan fokus utama pada **efisiensi tinggi dan ramah perangkat lawas**:
+- **Optimal untuk Perangkat Jadul (*Legacy-Friendly*)**: Didesain khusus agar nyaman dibuka di browser lawas dan pas di layar rasio kotak **1:1 (720x720 piksel)** seperti **BlackBerry Q10**, ponsel tombol QWERTY, maupun smartphone modern.
+- **Bebas Dependensi & Menggunakan Serverless Relay**: Frontend berjalan ringan memakai manipulasi DOM manual dan `XMLHttpRequest`. Permintaan API ditangani oleh Vercel Serverless Function (`api/chat.js`) sebagai perantara (*relay*) agar terbebas dari masalah CORS di browser lama sekaligus menjaga keamanan komunikasi data.
+- **Tersedia Publik di Vercel**: Bisa langsung dicoba lewat **[grrmini.vercel.app](https://grrmini.vercel.app)** dengan kecepatan Edge CDN Vercel yang stabil.
 
 ---
 
 ## ⚡ Fitur Unggulan
 
-| Fitur | Deskripsi |
+| Fitur | Penjelasan |
 | :--- | :--- |
-| 🚀 **Hosted on Vercel & Fast CDN** | Berjalan mulus di edge network Vercel melalui domain **[grrmini.vercel.app](https://grrmini.vercel.app)** dengan waktu pemuatan (*loading time*) mendekati instan. |
-| ⚡ **Zero Frontend Dependencies & Relay** | Frontend seringan bulu tanpa bundle npm, dipadukan dengan Vercel Serverless Function (`api/chat.js`) sebagai relay yang aman dan bebas kendala CORS pada browser lawas. |
-| 🪶 **Ultra-Lightweight & Legacy-Friendly** | Tanpa React, Tailwind, ataupun Marked.js. Menggunakan **Custom Regex Markdown Parser** internal yang enteng untuk merender teks tebal/miring, kutipan (*blockquote*), daftar poin (*lists*), dan tabel data responsif. |
-| 🕒 **Auto WIB Time Injection** | Menghitung dan menyuntikkan waktu lokal Jakarta (**WIB / UTC+7**) secara otomatis ke dalam *system instruction*. AI selalu memahami konteks hari, tanggal, bulan, tahun, dan jam saat ini tanpa memboroskan kuota pencarian web. |
-| 🔄 **Smart Multi-Key Failover (Rerolling)** | Anti gangguan akibat *rate limit* (HTTP 429) atau kuota harian habis. Mendukung pengisian banyak Gemini API Key dan Tavily API Key (satu baris per key). Sistem otomatis merotasi ke key berikutnya tanpa memutus obrolan. |
-| 🔍 **Web Browsing Toggle (Tavily)** | Akses penelusuran informasi faktual real-time dari internet melalui Tavily Search API. Cukup aktifkan/nonaktifkan lewat satu sentuhan pada checkbox. |
-| ⭐ **Penyimpanan Chat Favorit** | Simpan riwayat jawaban penting ke `localStorage`. Dilengkapi tombol hapus dengan sistem **jeda konfirmasi 1,5 detik (*anti-accidental click safeguard*)** agar riwayat tidak sengaja terhapus di layar kecil. |
-| ⌨️ **Navigasi Keyboard & Trackpad Ergonomis** | Mendukung tombol `Enter` untuk mengirim pesan, tombol cepat **Reset** sesi, serta palet warna *dark mode* modern bernuansa abu gelap hemat daya layar OLED/AMOLED. |
+| 🚀 **Hosted di Vercel & Fast CDN** | Akses cepat lewat domain **[grrmini.vercel.app](https://grrmini.vercel.app)** dengan loading awal yang nyaris instan. |
+| ⚡ **Nol Dependensi Frontend & Relay Aman** | Frontend murni tanpa modul npm yang berat, dipadukan fungsi serverless (`api/chat.js`) untuk memotong kendala CORS di browser jadul. |
+| 🪶 **Sangat Ringan & Ramah Browser Lawas** | Tanpa Marked.js. Dilengkapi **Custom Regex Markdown Parser** bawaan untuk menampilkan teks tebal/miring, kutipan (*blockquote*), daftar poin (*lists*), dan tabel data responsif. |
+| 🕒 **Otomatis Tahu Waktu WIB** | Menyuntikkan waktu Jakarta (**WIB / UTC+7**) secara otomatis ke instruksi sistem AI. Model langsung paham hari, tanggal, dan jam terkini tanpa perlu membuang kuota pencarian web. |
+| 🔄 **Rotasi Kunci Otomatis (Multi-Key Failover)** | Anti macet saat kena batas kuota (*rate limit* / HTTP 429). Kamu bisa memasukkan beberapa API Key Gemini dan Tavily sekaligus (satu per baris). Sistem otomatis beralih ke kunci cadangan kalau kunci utama limit. |
+| 🔍 **Saklar Web Browsing (Tavily)** | Cari fakta dan info terkini dari internet lewat integrasi Tavily Search API. Cukup centang atau hilangkan centang pada toggle sesuai kebutuhan. |
+| ⭐ **Simpan Chat Favorit** | Simpan jawaban penting ke `localStorage` browser. Ada proteksi jeda tombol hapus **1,5 detik (*anti-accidental click*)** biar riwayat nggak gampang terhapus saat layar kecil tersenggol. |
+| ⌨️ **Nyaman Pakai Keyboard Fisik** | Kirim pesan cepat pakai tombol `Enter`, tombol **Reset** sesi sekali klik, dan tema gelap (*dark mode*) yang hemat daya di layar OLED/AMOLED. |
 
 ---
 
 ## 🏗️ Arsitektur & Alur Kerja
 
-Grrmini memadukan antarmuka peramban yang ultra-ringan dengan fungsi serverless Vercel (`api/chat.js`) sebagai jembatan relay untuk menghindari limitasi CORS dan menjamin kompatibilitas peramban lawas:
+Grrmini menghubungkan antarmuka web yang ringan ke backend serverless Vercel (`api/chat.js`) sebagai perantara:
 
 ```text
-[ Input Pengguna ] ──► [ Vercel Serverless Relay (api/chat) ]
-                            ├── Injeksi Jam Jakarta (WIB)
-                            ├── Rotasi Tavily Search (Jika Toggle Aktif)
-                            └── Request ke Gemini 3.6 Flash (Failover Loop)
-                                      │
-                                      ▼
-                      [ Kirim Balasan ke Browser BlackBerry ]
-                                      │
-                                      ▼
-                      [ Render Markdown & Simpan Favorit ]
+[ Input Pesan dari User ] ──► [ Vercel Serverless Relay (api/chat) ]
+                                   ├── Injeksi Jam Lokal Jakarta (WIB)
+                                   ├── Rotasi Pencarian Tavily (Jika Web Aktif)
+                                   └── Request ke Gemini 3.6 Flash (Rotasi Failover)
+                                             │
+                                             ▼
+                             [ Kirim Balasan ke Browser HP / BlackBerry ]
+                                             │
+                                             ▼
+                             [ Render Markdown & Opsi Simpan Favorit ]
 ```
 
 ---
 
-## 🔑 Panduan Mendapatkan API Key (Gratis)
+## 🔑 Cara Dapat API Key Gratis
 
-Grrmini membutuhkan setidaknya satu **Google Gemini API Key**. Untuk fitur pencarian web real-time, Anda dapat melengkapinya dengan **Tavily Search API Key**. Keduanya menyediakan paket kuota gratis (*free tier*):
+Grrmini minimal membutuhkan satu **Google Gemini API Key**. Kalau ingin menyalakan fitur pencarian web, kamu juga bisa menambahkan **Tavily Search API Key**. Keduanya menyediakan kuota gratis tanpa kartu kredit:
 
-### 1. Mendapatkan Google Gemini API Key (Gratis)
-1. Kunjungi portal **[Google AI Studio](https://aistudio.google.com/)**.
-2. Masuk menggunakan akun Google Anda.
-3. Klik menu **Get API key** di bilah navigasi sebelah kiri.
-4. Klik **Create API key** (pilih project Google Cloud yang tersedia atau buat baru).
-5. Salin token API yang berawalan `AIzaSy...`.
-6. *(Tips)*: Anda dapat membuat 2–3 API key berbeda untuk memanfaatkan fitur multi-key rerolling otomatis di Grrmini.
+### 1. Mendapatkan Google Gemini API Key
+1. Buka situs **[Google AI Studio](https://aistudio.google.com/)**.
+2. Login menggunakan akun Google.
+3. Klik menu **Get API key** di bilah navigasi kiri.
+4. Klik **Create API key** (bisa buat di project baru atau yang sudah ada).
+5. Salin kode API yang diawali `AIzaSy...`.
+6. *(Tips)*: Kamu bisa membuat beberapa key dari akun berbeda untuk memanfaatkan fitur rotasi kunci otomatis.
 
-### 2. Mendapatkan Tavily Search API Key (Gratis)
-1. Kunjungi situs resmi **[Tavily AI](https://tavily.com/)**.
-2. Klik **Sign Up** untuk membuat akun gratis (*Free tier* mencakup **1.000 pencarian/bulan**).
-3. Masuk ke halaman **Dashboard**.
-4. Salin API key yang berawalan `tvly-...`.
+### 2. Mendapatkan Tavily Search API Key
+1. Buka situs **[Tavily AI](https://tavily.com/)**.
+2. Daftar akun gratis (*Free tier* dapat jatah **1.000 pencarian per bulan**).
+3. Buka halaman **Dashboard**.
+4. Salin kode API yang diawali `tvly-...`.
 
 ---
 
-## 🚀 Panduan Penggunaan
+## 🚀 Cara Pakai
 
 ### 1. Membuka Aplikasi
-Akses web app langsung melalui peramban:  
+Langsung buka web lewat browser:  
 👉 **[https://grrmini.vercel.app](https://grrmini.vercel.app)**
 
-Saat pertama kali dibuka, panel pengaturan kunci (*Keys*) akan otomatis terbuka meminta konfigurasi API key awal.
+Saat pertama kali dibuka, menu pengaturan kunci (**Keys**) akan otomatis muncul untuk meminta API key awal.
 
 ### 2. Memasukkan Multi-Key (Menu "Keys")
-Klik tombol **Keys** pada bilah menu atas:
+Klik tombol **Keys** di bilah navigasi atas:
 
 ```text
 ┌────────────────────────────────────────────────────────┐
@@ -128,43 +128,43 @@ Klik tombol **Keys** pada bilah menu atas:
 │                        [ Simpan Pengaturan ]           │
 └────────────────────────────────────────────────────────┘
 ```
-- **Gemini API Keys**: Masukkan satu atau lebih key, pisahkan setiap key dengan baris baru (*Enter*).
-- **Tavily API Keys**: Masukkan key Tavily Anda (juga mendukung banyak baris untuk rotasi otomatis).
-- Klik **Simpan Pengaturan**. Seluruh key tersimpan secara privat di `localStorage` peramban Anda dan tidak pernah disimpan di server pihak ketiga mana pun.
+- **Gemini API Keys**: Masukkan satu atau beberapa key, pisahkan tiap key dengan baris baru (*Enter*).
+- **Tavily API Keys**: Masukkan key Tavily milikmu (bisa isi lebih dari satu untuk rotasi otomatis).
+- Klik **Simpan Pengaturan**. Seluruh kunci disimpan lokal di `localStorage` browsermu dan tidak pernah dikirim ke pihak luar selain penyedia API terkait.
 
-### 3. Menggunakan Web Browsing (Tavily)
-- Beri tanda centang pada checkbox **Web Browsing (Tavily)** bila ingin menanyakan info terkini (berita hari ini, skor pertandingan, cuaca, harga terkini).
-- Hilangkan centang untuk obrolan umum, brainstorming, atau coding agar kuota pencarian web tetap hemat.
+### 3. Menggunakan Fitur Web Browsing
+- Centang kotak **Web Browsing (Tavily)** kalau ingin menanyakan hal-hal baru (berita hari ini, skor pertandingan, cuaca, atau harga barang terkini).
+- Hilangkan centang untuk obrolan santai, coding, atau analisis teks agar kuota pencarian web tidak cepat habis.
 
 ### 4. Menyimpan & Menghapus Chat Favorit
-- Klik tombol **☆ Simpan** di sudut kanan gelembung balasan AI untuk menyimpan obrolan penting.
-- Buka daftar simpanan kapan saja dengan menekan tombol **Favorit** di header.
-- **Jeda Proteksi 1,5 Detik**: Untuk mencegah salah pencet di layar sentuh perangkat mini, tombol **Hapus** memerlukan jeda 1,5 detik (`Yakin? 1.5s` ➔ `Hapus Sekarang`) sebelum data benar-benar dihapus dari `localStorage`.
+- Klik tombol **☆ Simpan** di pojok kanan balon pesan AI untuk menyimpan jawaban penting.
+- Lihat kembali catatan yang tersimpan lewat tombol **Favorit** di header atas.
+- **Proteksi Hapus 1,5 Detik**: Tombol **Hapus** memiliki jeda konfirmasi 1,5 detik (`Yakin? 1.5s` ➔ `Hapus Sekarang`) untuk mencegah chat terhapus karena salah pencet di layar mini.
 
-### 5. Memulai Sesi Baru
-Tekan tombol **Reset** di navigasi atas untuk menghapus obrolan pada layar dan memulai sesi percakapan baru yang segar dengan sapaan ramah sesuai waktu (Pagi/Siang/Sore/Malam).
+### 5. Memulai Obrolan Baru
+Klik tombol **Reset** di header untuk membersihkan layar obrolan dan menampilkan sapaan awal sesuai waktu saat itu (Pagi, Siang, Sore, atau Malam).
 
 ---
 
-## 🌐 Panduan Deploy ke Vercel
+## 🌐 Deploy ke Vercel
 
-Jika Anda ingin men-deploy project ini ke akun Vercel Anda sendiri:
+Kalau kamu ingin menjalankan project ini di akun Vercel sendiri:
 
-### Metode 1: Lewat Dashboard Vercel (Rekomendasi)
+### Cara 1: Lewat Dashboard Vercel (Paling Gampang)
 1. Buka [Vercel Dashboard](https://vercel.com/) dan lakukan login.
 2. Klik tombol **Add New** ➔ **Project**.
-3. Hubungkan akun GitHub Anda dan pilih repositori `grrmini`.
-4. Di bagian pengaturan konfigurasi:
+3. Sambungkan akun GitHub dan pilih repositori `grrmini`.
+4. Pada bagian pengaturan:
    - **Framework Preset**: Pilih `Other`.
-   - **Root Directory**: `./` (default).
-5. Klik **Deploy**. Vercel akan otomatis mendistribusikan aplikasi web Anda ke domain `*.vercel.app`.
+   - **Root Directory**: `./` (biarkan default).
+5. Klik **Deploy**. Vercel akan otomatis menyiapkan aplikasi web di domain `*.vercel.app`.
 
-### Metode 2: Menggunakan Vercel CLI
+### Cara 2: Lewat Vercel CLI
 ```bash
-# Pasang Vercel CLI (jika belum ada)
+# Pasang Vercel CLI jika belum ada
 npm i -g vercel
 
-# Masuk ke direktori project
+# Masuk ke folder project
 cd grrmini
 
 # Jalankan deploy
@@ -175,31 +175,31 @@ vercel
 
 ## 📱 Kompatibilitas Perangkat
 
-Grrmini telah diuji dan dioptimalkan secara mendalam untuk:
-- 📱 **BlackBerry 10 OS** (BlackBerry Q10) via BlackBerry Native Browser (rasio layar 1:1).
-- 📱 **Feature Phone & Perangkat Mini** dengan resolusi layar kotak atau ringkas.
+Grrmini sudah diuji dan berjalan lancar di:
+- 📱 **BlackBerry 10 OS** (BlackBerry Q10) lewat browser bawaan (rasio layar kotak 1:1).
+- 📱 **Feature Phone & Ponsel Mini** dengan layar beresolusi kompak.
 - 💻 **Desktop & Smartphone Modern** (Chrome, Firefox, Safari, Edge, Opera, Kiwi, Brave).
 
 ---
 
-## 🛠️ Tech Stack Detail
+## 🛠️ Detail Tech Stack
 
-| Lapisan | Teknologi | Peran & Deskripsi |
+| Bagian | Teknologi | Keterangan |
 | :--- | :--- | :--- |
-| **Markah & Struktur** | HTML5 Semantik | Tag standar tanpa pustaka UI eksternal, hemat memori. |
-| **Gaya & Desain** | CSS3 Murni | Tampilan responsif Flexbox, ramah viewport kecil, tema gelap hemat daya (*OLED friendly*). |
-| **Logika Frontend** | Vanilla JavaScript (ES5/ES6) | Menggunakan objek native `XMLHttpRequest` dan `localStorage` tanpa dependensi runtime npm. |
-| **Backend Relay** | Vercel Serverless Function (`api/chat.js`) | Perantara aman komunikasi API untuk menghindari limitasi CORS pada peramban jadul. |
+| **Tampilan & Struktur** | HTML5 Semantik | Tag standar tanpa dependensi UI eksternal, hemat memori. |
+| **Desain & Gaya** | CSS3 Murni | Layout Flexbox responsif, pas di layar kecil, serta tema gelap hemat daya (*OLED-friendly*). |
+| **Logika Frontend** | Vanilla JavaScript | Menggunakan `XMLHttpRequest` dan `localStorage` native tanpa runtime tambahan. |
+| **Backend Relay** | Vercel Serverless Function (`api/chat.js`) | Perantara pemanggilan API untuk memotong kendala CORS di browser lama. |
 | **Model AI** | Google Gemini 3.6 Flash | Endpoint resmi `generateContent` via Google Generative Language API v1beta. |
-| **Pencarian Web** | Tavily REST API | Integrasi pencarian web AI berbobot ringkas untuk konteks real-time. |
-| **Hosting & Platform** | Vercel | CDN global di **[grrmini.vercel.app](https://grrmini.vercel.app)**. |
-| **Penyimpanan** | Browser LocalStorage | Menyimpan API keys dan daftar chat favorit secara privat di sisi pengguna. |
+| **Pencarian Web** | Tavily REST API | Mesin pencari berbasis AI yang ringkas untuk konteks web real-time. |
+| **Hosting** | Vercel | Didistribusikan global via CDN di **[grrmini.vercel.app](https://grrmini.vercel.app)**. |
+| **Penyimpanan Data** | Browser LocalStorage | Menyimpan API key dan riwayat chat favorit langsung di perangkat pengguna. |
 
 ---
 
 ## 📄 Lisensi
 
-Project ini dirilis di bawah lisensi [MIT License](LICENSE). Anda bebas menggunakan, memodifikasi, dan mendistribusikan ulang kode ini untuk keperluan personal maupun komersial.
+Project ini dirilis di bawah lisensi [MIT License](LICENSE). Bebas digunakan, diubah, dan didistribusikan ulang untuk kebutuhan pribadi maupun komersial.
 
 ```text
 MIT License

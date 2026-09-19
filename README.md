@@ -4,7 +4,8 @@
 
 **Ultra-Lightweight Gemini AI Web Client — Zero Dependencies, Legacy Browser Ready, 100% Client-Side.**
 
-[![GitHub Pages](https://img.shields.io/badge/Hosted%20on-GitHub%20Pages-222222?style=for-the-badge&logo=github&logoColor=white)](https://pages.github.com/)
+[![Hosted on Vercel](https://img.shields.io/badge/Hosted%20on-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://grrmini.vercel.app)
+[![Website](https://img.shields.io/badge/Website-grrmini.vercel.app-4e8cff?style=for-the-badge&logo=googlechrome&logoColor=white)](https://grrmini.vercel.app)
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
 [![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
 [![JavaScript](https://img.shields.io/badge/Vanilla%20JS-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
@@ -12,13 +13,17 @@
 [![Tavily Search](https://img.shields.io/badge/Search-Tavily%20API-00C7B7?style=for-the-badge&logo=tavily&logoColor=white)](https://tavily.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
+<br/>
+
+### 🌐 Tautan Web App: [grrmini.vercel.app](https://grrmini.vercel.app)
+
 <p align="center">
   <a href="#-gambaran-umum">Gambaran Umum</a> •
   <a href="#-fitur-unggulan">Fitur Unggulan</a> •
   <a href="#-arsitektur--alur-kerja">Arsitektur</a> •
   <a href="#-panduan-mendapatkan-api-key">Dapatkan API Key</a> •
   <a href="#-panduan-penggunaan">Cara Pakai</a> •
-  <a href="#-panduan-deploy-ke-github-pages">Deploy</a> •
+  <a href="#-panduan-deploy-ke-vercel">Deploy ke Vercel</a> •
   <a href="#-lisensi">Lisensi</a>
 </p>
 
@@ -30,10 +35,10 @@
 
 **Grrmini** adalah klien web kecerdasan buatan (*AI chat client*) mandiri berbasis Google Gemini yang dirancang **murni dengan Vanilla HTML5, CSS3, dan JavaScript standar** tanpa satu pun dependensi pustaka luar, framework modern (React/Vue/Angular), maupun *bundler/build-tools*.
 
-Project ini dibangun dengan filosofi **efisiensi ekstrem dan aksesibilitas maksimal**:
+Project ini di-host di **[Vercel](https://grrmini.vercel.app)** dan dibangun dengan filosofi **efisiensi ekstrem serta aksesibilitas maksimal**:
 - **Dukungan Perangkat Lawas (*Legacy-Friendly*)**: Didesain secara spesifik dan ergonomis untuk perangkat berspesifikasi minim serta peramban web lawas berlayar rasio kotak **1:1 (720x720 piksel)** seperti **BlackBerry Q10**, BlackBerry Passport, maupun ponsel keypad/touch modern.
-- **100% Client-Side**: Seluruh logika aplikasi, komunikasi API via `XMLHttpRequest`, *state management*, hingga parsing Markdown berjalan langsung di dalam peramban web pengguna.
-- **Nol Biaya Server**: Cukup letakkan berkas statis di **GitHub Pages**, dan aplikasi langsung aktif tanpa butuh VPS, Node.js runtime, server backend sewa, atau konfigurasi proxy rumit.
+- **Ultra-Ringan & Tanpa Overhead**: Seluruh logika aplikasi, komunikasi API via `XMLHttpRequest`, *state management*, hingga parsing Markdown berjalan langsung di dalam peramban web pengguna dengan konsumsi RAM yang sangat minim.
+- **Hosted on Vercel**: Dapat langsung diakses secara instan di **[grrmini.vercel.app](https://grrmini.vercel.app)** dengan kecepatan jaringan Edge CDN global Vercel.
 
 ---
 
@@ -41,7 +46,7 @@ Project ini dibangun dengan filosofi **efisiensi ekstrem dan aksesibilitas maksi
 
 | Fitur | Deskripsi |
 | :--- | :--- |
-| 🌐 **100% Static & Client-Side** | Berjalan penuh di sisi klien (*browser*). Sangat aman, privat, dan dapat di-host secara gratis di GitHub Pages tanpa backend server tambahan. |
+| 🚀 **Hosted on Vercel & Fast CDN** | Berjalan mulus di edge network Vercel melalui domain **[grrmini.vercel.app](https://grrmini.vercel.app)** dengan waktu pemuatan (*loading time*) mendekati instan. |
 | 🪶 **Ultra-Lightweight & Legacy-Friendly** | Tidak ada React, tidak ada Tailwind, tidak ada Marked.js. Dibekali **Custom Regex Markdown Parser** ringan untuk merender format teks tebal/miring, kutipan (*blockquote*), daftar (*lists*), dan tabel data responsif. |
 | 🕒 **Auto WIB Time Injection** | Menghitung dan menyuntikkan waktu lokal Jakarta (**WIB / UTC+7**) secara otomatis ke dalam *system prompt*. AI selalu tahu hari, tanggal, bulan, tahun, dan jam terkini tanpa membuang kuota pencarian web. |
 | 🔄 **Smart Multi-Key Failover (Rerolling)** | Mencegah terhentinya percakapan karena limit kuota (*rate limit / HTTP 429*). Cukup masukkan beberapa Gemini API Key dan Tavily API Key (satu baris per kunci), sistem otomatis berpindah ke kunci berikutnya secara *seamless*. |
@@ -104,7 +109,10 @@ Grrmini membutuhkan setidaknya satu **Google Gemini API Key**. Jika Anda ingin m
 ## 🚀 Panduan Penggunaan
 
 ### 1. Membuka Aplikasi
-Buka URL repositori GitHub Pages Anda (misal: `https://username.github.io/grrmini/public/`). Saat pertama kali dibuka, panel konfigurasi kunci akan otomatis muncul.
+Akses web app langsung melalui peramban:  
+👉 **[https://grrmini.vercel.app](https://grrmini.vercel.app)**
+
+Saat pertama kali dibuka, panel pengaturan kunci (*Keys*) akan otomatis muncul untuk meminta konfigurasi API key awal.
 
 ### 2. Memasukkan Multi-Key (Menu "Keys")
 Klik tombol **Keys** pada bilah navigasi atas untuk menampilkan formulir pengaturan:
@@ -141,10 +149,38 @@ Klik tombol **Reset** pada header untuk membersihkan riwayat obrolan di layar da
 
 ---
 
+## 🌐 Panduan Deploy ke Vercel
+
+Jika Anda ingin men-deploy project ini ke akun Vercel Anda sendiri:
+
+### Metode 1: Lewat Dashboard Vercel (Rekomendasi)
+1. Buka [Vercel Dashboard](https://vercel.com/) dan lakukan login.
+2. Klik tombol **Add New** ➔ **Project**.
+3. Hubungkan akun GitHub Anda dan pilih repositori `masjemini` (atau nama repositori Anda).
+4. Di bagian pengaturan konfigurasi:
+   - **Framework Preset**: Pilih `Other`.
+   - **Root Directory**: `./` (default).
+5. Klik **Deploy**. Vercel akan otomatis mendistribusikan aplikasi web Anda ke domain `*.vercel.app`.
+
+### Metode 2: Menggunakan Vercel CLI
+```bash
+# Pasang Vercel CLI (jika belum ada)
+npm i -g vercel
+
+# Masuk ke direktori project
+cd masjemini
+
+# Jalankan deploy
+vercel
+```
+
+---
+
 ## 📱 Kompatibilitas Perangkat
 
 Grrmini telah diuji dan dioptimalkan untuk:
-- 📱 **BlackBerry 10 OS** (BlackBerry Q10) via BlackBerry Native Browser.
+- 📱 **BlackBerry 10 OS** (BlackBerry Q10, Q5, Classic, Passport) via BlackBerry Native Browser.
+- 📱 **Feature Phone & Perangkat Mini** dengan resolusi layar 1:1, 4:3, atau rasio modern.
 - 💻 **Desktop & Smartphone Modern** (Chrome, Firefox, Safari, Edge, Opera).
 
 ---
@@ -158,6 +194,7 @@ Grrmini telah diuji dan dioptimalkan untuk:
 | **Logika & State** | Vanilla JavaScript (ES5/ES6) | Menggunakan objek native `XMLHttpRequest` dan `localStorage` tanpa dependensi runtime. |
 | **Model AI** | Google Gemini 3.6 Flash | Endpoint resmi `generateContent` via Google Generative Language API v1beta. |
 | **Pencarian Web** | Tavily REST API | Integrasi pencarian web AI berbobot ringkas untuk konteks real-time. |
+| **Hosting & Platform** | Vercel | CDN global di **[grrmini.vercel.app](https://grrmini.vercel.app)**. |
 | **Penyimpanan** | Browser LocalStorage | Menyimpan API keys dan daftar chat favorit secara privat di sisi pengguna. |
 
 ---
@@ -185,5 +222,6 @@ copies or substantial portions of the Software.
 ---
 
 <div align="center">
-  <sub>Dibuat dengan ❤️ untuk para pecinta handphone jadoel dan AI Gemini.</sub>
+  <sub>Dibuat dengan ❤️ untuk para pecinta handphone jadoel dan web minimalis berkecepatan tinggi.</sub><br/>
+  <sub>Kunjungi: <a href="https://grrmini.vercel.app">grrmini.vercel.app</a></sub>
 </div>

@@ -194,6 +194,7 @@ Grrmini is tested and supported on:
 | **Web Search** | Tavily REST API | AI-optimized search queries for live context injection. |
 | **Hosting** | Vercel | Global Edge network hosting at **[grrmini.vercel.app](https://grrmini.vercel.app)**. |
 | **Client Storage** | Browser LocalStorage | Retains API keys and bookmark history on the client side. |
+[![Views](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FirfanGaming720%2Fgrrmini&count_bg=%234285F4&title_bg=%23181818&icon=&icon_color=%23E7E7E7&title=Views&edge_flat=false)](https://github.com/irfanGaming720/grrmini)
 
 ---
 
